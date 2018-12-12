@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 
 <template>
-	
+
 <div class="index">
 	<div class="hd row">
 		<div class="web-header row col-md-3 col-md-offset-1">
 			<img class="col-md-2" height="30px" width="35px" src="../../static/svg/library.svg"/>
 			<span>HOME</span>
 		</div>
-				
+		
 		<button class="btn btn-default btn-goLogin col-md-1 col-md-offset-7" v-on:click="goTo('/login')">Login</button>
 	</div>
 	<router-view/>
 </div>
-
 </template>
 
 <script>

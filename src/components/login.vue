@@ -1,40 +1,34 @@
 <!DOCTYPE html>
 
 <template>
-
 <div class="login">
-
-		<form id="login-tab">
-			<div class="input form-group">
-				<label for="input-id">
-					<img class="left-float" height="18" width="35" src="../../static/svg/account.svg"/>
-				</label>
-				<input type="text" class="form-control" placeholder="ID">
-			</div>
-			<div class="input form-group">
-				<label for="input-pw">
-					<img class="left-float" height="18" width="35" src="../../static/svg/password.svg"/>
-				</label>
-				<input type="password" class="form-control" placeholder="Password">
-			</div>
-
-		</form>
-
-		<div class="checkbox">
-			<label>
-				<input type="checkbox" value="true" class="demo-radio demo-radioInput">
-				<span class="demo-checkbox demo-radioInput"></span>Remember me in 7 days.
+	<form id="login-tab">
+		<div class="input form-group">
+			<label for="input-id">
+				<img class="left-float" height="18" width="35" src="../../static/svg/account.svg"/>
 			</label>
+			<input type="text" class="form-control" placeholder="ID">
 		</div>
-		<button type="button" class=" btn btn-goHome" v-on:click="goTo('/')">Home</button>
-		<button type="button" class=" btn btn-login">Login</button>
-		<!-- <div class="ft" >
-			<img width="32px" class="git" onclick="window.open('https://github.com/Phenanth/GA-Login');" src="./static/svg/github5.svg"/>
-		</div> -->
-
+		<div class="input form-group">
+			<label for="input-pw">
+				<img class="left-float" height="18" width="35" src="../../static/svg/password.svg"/>
+			</label>
+			<input type="password" class="form-control" placeholder="Password">
+		</div>
+	</form>
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" value="true" class="demo-radio demo-radioInput">
+			<span class="demo-checkbox demo-radioInput"></span>Remember me in 7 days.
+		</label>
+	</div>
+	<button type="button" class=" btn btn-goHome" v-on:click="goTo('/')">Home</button>
+	<button type="button" class=" btn btn-login">Login</button>
+	<!-- <div class="ft" >
+				<img width="32px" class="git" onclick="window.open('https://github.com/Phenanth/GA-Login');" src="./static/svg/github5.svg"/>
+	</div> -->
 </div>
 </template>
-
 <script>
 	
 export default {
