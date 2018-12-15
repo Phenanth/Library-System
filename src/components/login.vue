@@ -19,10 +19,10 @@
 	<div class="checkbox">
 		<label>
 			<input type="checkbox" value="true" class="demo-radio demo-radioInput">
-			<span class="demo-checkbox demo-radioInput"></span>Remember me in 7 days.
+			<span class="demo-checkbox demo-radioInput"></span>七天内自动登录
 		</label>
 	</div>
-	<button type="button" class=" btn btn-goHome" v-on:click="goTo('/')">Home</button>
+	<!-- <button type="button" class=" btn btn-goHome" v-on:click="goTo('/')">Home</button> -->
 	<button type="button" class=" btn btn-login">Login</button>
 	<!-- <div class="ft" >
 				<img width="32px" class="git" onclick="window.open('https://github.com/Phenanth/GA-Login');" src="./static/svg/github5.svg"/>
@@ -54,7 +54,7 @@ export default {
 }
 
 .input {
-	width: 200px;
+	width: 250px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -62,7 +62,7 @@ export default {
 }
 
 .btn-login {
-	width: 180px;
+	width: 200px;
 	background-color: #0EA8A3;
 	color: white;
 	margin-top: 30px;
