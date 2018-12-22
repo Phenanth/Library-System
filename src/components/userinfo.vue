@@ -106,6 +106,27 @@ export default {
 			this.presentTab = path
 		},
 		submitChange: function () {
+
+			if (this.alter.newPassword == this.alter.checkPassword) {
+				let opt = {
+					username: JSON.parse(store.getters.showTokenState).username,
+					oldPassword: this.alter.oldPassword,
+					newPassword: this.alter.newPassword
+				}
+				// console.log(opt)
+				api.changePassword(opt).then(({
+					data
+				}) => {
+					if (data.info == 200) {
+						alert('Successfully changed password.')
+						this.alterTab('profile')
+					} else {
+						alert(data.message)
+					}
+				})
+			} else {
+				alert('Check password is not consistent.')
+			}
 			
 		}
 	},

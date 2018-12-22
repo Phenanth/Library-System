@@ -33,6 +33,10 @@ export default {
 
 	getData ( data ) {
 		return instance.post('/api/getUserData', data)
+	},
+
+	changePassword ( data ) {
+		return instance.post('/api/changePassword', data)
 	}
 
 }

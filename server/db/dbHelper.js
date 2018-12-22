@@ -94,7 +94,7 @@ const GetUserData = (req, res) => {
 					message: 'User not exists.'
 				});
 			} else {
-				console.log('Operation: Get User Data, State: 200, Message: Unknown DB Fault.');
+				console.log('Operation: Get User Data, State: 200');
 				res.json({
 					info: 200,
 					success: true,
@@ -117,10 +117,89 @@ const GetUserData = (req, res) => {
 
 };
 
+const ChangePassword = (req, res) => {
+
+	// console.log(req.body)
+
+	let queryString_request = {
+		sql: 'SELECT User_Password AS solution FROM User_Information WHERE User_ID=?',
+		values: [req.body.username],
+		timeout: 40000
+	};
+
+	db.query(queryString_request, function(error, results, fields) {
+
+		if (error) {
+			console.log(error)
+		}
+
+		if (results) {
+			if (!results[0]) {
+				// 用户不存在
+				console.log('Operation: Change Password, State: 404, Message: User not exists.');
+				res.json({
+					info: 404,
+					success: false,
+					message: 'User not exists.'
+				});
+			} else {
+				// console.log(results[0])
+				if (req.body.oldPassword == results[0].solution) {
+					// 旧密码正确
+					let queryString_update = {
+						sql: 'UPDATE User_Information SET User_Password=?',
+						values: [req.body.newPassword],
+						timeout: 40000
+					};
+
+					db.query(queryString_update, function(error, results, fields) {
+						if (error) {
+							console.log(error)
+						}
+						if (results) {
+							console.log('Operation: Change Password, State: 200');
+							res.json({
+								info: 200,
+								success: true
+							});
+						} else {
+							// 查询失败
+							console.log('Operation: Change Password, State: 504, Message: Unknown DB Fault.');
+							res.json({
+								info: 504,
+								success: false,
+								message: 'Unknown DB Fault.'
+							});
+						}
+					});
+				} else {
+					// 旧密码错误
+					console.log('Operation: Change Password, State: 304, Message: Wrong Password.');
+					res.json({
+						info: 304,
+						success: false,
+						message: 'Wrong Password.'
+					});
+				}
+			}
+		} else {
+			// 查询失败
+			console.log('Operation: Change Password, State: 504, Message: Unknown DB Fault.');
+			res.json({
+				info: 504,
+				success: false,
+				message: 'Unknown DB Fault.'
+			});
+		}
+	})
+}
+
 module.exports = (router) => {
 
 	router.post('/login', Login);
 
-	router.post('/getUserData', GetUserData)
+	router.post('/getUserData', GetUserData);
+
+	router.post('/changePassword', ChangePassword);
 
 }
