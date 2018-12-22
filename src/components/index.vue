@@ -15,7 +15,7 @@
 		    <div class="input-group">
 		      <input type="text" class="form-control" placeholder="图书名 / 作者名 / 分类">
 		      <span class="input-group-btn">
-		        <button class="btn btn-default" type="button">搜索</button>
+		        <button class="btn btn-default" type="button" v-on:click="goTo('/search')">搜索</button>
 		      </span>
 		    </div>
 		  </div>
@@ -68,6 +68,7 @@ html, body {
 .hd {
 	top: 0px;
 	position: fixed;
+	z-index: 100;
 	width: calc(100% + 20px);
 	background-color: #0EA8A3;
 	height: 45px;

@@ -11,6 +11,9 @@ import Tips from '@/components/book/tips'
 import Ensure from '@/components/book/ensure'
 import Success from '@/components/book/success'
 
+import Search from '@/components/search'
+import Search_detail from '@/components/search_detail'
+
 Vue.use(Router)
 
 export default new Router({
@@ -50,6 +53,16 @@ export default new Router({
               component: Success
             }
           ]
+        },
+        {
+          path: '/search',
+          name: 'Search',
+          component: Search
+        },
+        {
+          path: '/search_detail',
+          name: 'Search_detail',
+          component: Search_detail
         }
       ]
     },
