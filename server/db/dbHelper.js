@@ -10,7 +10,7 @@ const Login = (req, res) => {
 
 	let validTime = '10s';
 	let queryString = {
-		sql: 'SELECT user_password AS solution FROM user WHERE user_id=?',
+		sql: 'SELECT User_Password AS solution FROM User_Information WHERE User_ID=?',
 		values: [req.body.username],
 		timeout: 40000
 	};
@@ -19,7 +19,7 @@ const Login = (req, res) => {
 		validTime = '168h';
 	}
 	
-	console.log(req.body);
+	// console.log(req.body);
 
 	db.query(queryString, function(error, results, fields) {
 
@@ -70,8 +70,57 @@ const Login = (req, res) => {
 
 };
 
+const GetUserData = (req, res) => {
+
+	// console.log(req.body)
+	let queryString = {
+		sql: 'SELECT * FROM User_Information CROSS JOIN Identification WHERE User_Information.User_identity=Identification.User_identity AND User_ID=?',
+		values: [req.body.username],
+		timeout: 40000
+	};
+
+	db.query(queryString, function(error, results, fields) {
+
+		if (error) {
+			console.log(error)
+		}
+
+		if (results) {
+			if (!results[0]) {
+				console.log('Operation: Get User Data, State: 404, Message: User not existed.');
+				res.json({
+					info: 404,
+					success: false,
+					message: 'User not exists.'
+				});
+			} else {
+				console.log('Operation: Get User Data, State: 200, Message: Unknown DB Fault.');
+				res.json({
+					info: 200,
+					success: true,
+					user_name: results[0].User_Name,
+					user_id: results[0].User_ID,
+					user_identity: results[0].Identify_Name,
+					max_borrow_num: results[0].Max_Borrow_Num,
+					max_borrow_time: results[0].Max_Borrow_Time,
+				});
+			}
+		} else {
+			console.log('Operation: Get User Data, State: 504, Message: Unknown DB Fault.');
+			res.json({
+				info: 504,
+				success: false,
+				message: 'Unknown DB Fault.'
+			});
+		}
+	});
+
+};
+
 module.exports = (router) => {
 
 	router.post('/login', Login);
+
+	router.post('/getUserData', GetUserData)
 
 }

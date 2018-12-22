@@ -1,5 +1,7 @@
-/* 表创建 */
+CREATE DATABASE myLibrary;
+USE myLibrary;
 
+/* 表创建 */
 DROP TABLE IF EXISTS `User_Information`;
 DROP TABLE IF EXISTS `Identification`
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -19,7 +21,8 @@ CREATE TABLE `Identification` (
 ) ENGINE=InnoDB DEFAULT CHARSET=gbk;
 
 /* 创建用户 */
-
+CREATE USER `libraryAdmin`@`localhost` IDENTIFIED BY `000000`;
+GRANT ALL ON myLibrary.* TO `libraryAdmin`@`localhost` WITH GRANT OPTION;
 /* 添加数据 */
 
 INSERT INTO `User_Information` VALUES ('2015210405001', '123456', 'Alice', 1);
@@ -31,4 +34,3 @@ INSERT INTO `Identification` VALUES (1, '管理员', 30, 150);
 INSERT INTO `Identification` VALUES (2, '教职工', 30, 150);
 INSERT INTO `Identification` VALUES (3, '本科生', 10, 30);
 INSERT INTO `Identification` VALUES (4, '研究/博士生', 15, 150);
-

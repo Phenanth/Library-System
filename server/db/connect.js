@@ -6,7 +6,7 @@ const connection = mysql.createConnection({
 	host: 'localhost',
 	user: 'libraryAdmin',
 	password: '000000',
-	database: 'library'
+	database: 'myLibrary'
 });
 
 console.log('Database connected.');

@@ -7,36 +7,71 @@
 			<label for="input-id">
 				<img class="left-float" height="18" width="35" src="../../static/svg/account.svg"/>
 			</label>
-			<input type="text" class="form-control" placeholder="ID">
+			<input type="text" class="form-control" placeholder="ID" v-model="username">
 		</div>
 		<div class="input form-group">
 			<label for="input-pw">
 				<img class="left-float" height="18" width="35" src="../../static/svg/password.svg"/>
 			</label>
-			<input type="password" class="form-control" placeholder="Password">
+			<input type="password" class="form-control" placeholder="Password" v-model="password">
 		</div>
 	</form>
 	<div class="checkbox">
 		<label>
-			<input type="checkbox" value="true" class="demo-radio demo-radioInput">
+			<input type="checkbox" value="true" class="demo-radio demo-radioInput" v-model="willStore">
 			<span class="demo-checkbox demo-radioInput"></span>七天内自动登录
 		</label>
 	</div>
 	<!-- <button type="button" class=" btn btn-goHome" v-on:click="goTo('/')">Home</button> -->
-	<button type="button" class=" btn btn-login">Login</button>
+	<button type="button" class=" btn btn-login" v-on:click="login">Login</button>
 	<!-- <div class="ft" >
 				<img width="32px" class="git" onclick="window.open('https://github.com/Phenanth/GA-Login');" src="./static/svg/github5.svg"/>
 	</div> -->
 </div>
 </template>
 <script>
-	
+import api from '../api.js'
+import store from '../store'
 export default {
 	name: 'Login',
+	data: function () {
+		return {
+			username: '',
+			password: '',
+			willStore: false
+		}
+	},
 	methods: {
 		goTo: function (path) {
 			this.$router.push(path)
-		}
+		},
+		login: function () {
+			if (this.username != '' && this.password != '') {
+				let opt = {
+					username: this.username,
+					password: this.password,
+					willStore: this.willStore
+				}
+				api.doLogin(opt).then(({
+					data
+				}) => {
+					if (data.info == 200) {
+						// Authentificated role will be transfered from the server, this is just the test version.
+						let user = {
+							token: data.token,
+							username: this.username
+						}
+						store.dispatch('storeToken', JSON.stringify(user))
+						this.$router.push('/userinfo')
+						this.$router.go(0)
+					} else {
+						alert(data.message)
+					}
+				})
+			} else {
+				alert('Fill the blanks please.')
+			}
+		},
 	}
 }
 
