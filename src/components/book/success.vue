@@ -2,9 +2,9 @@
 <template>
 <div id="Borrow_Message">
   <div v-if="this.presentModule == 'borrow'">
-    <input type="button" value="首页" v-on:click="goTo('/')">
-    <h2>您已成功借阅以下书籍：</h2>
-    
+    <h2 class="username">姓名：李明</h2>
+    <h2 class="usernumber">卡号：2016210430020</h2>
+    <h2 class="tip">您已成功借阅以下书籍：</h2>
     <table border="1px solid black">
       <tbody>
         <tr>
@@ -29,11 +29,12 @@
         </tr>
       </tbody>
     </table>
+    <input type="button" value="返回首页" v-on:click="goTo('/')">
   </div>
   <div v-else-if="this.presentModule == 'return'">
-    <input type="button" value="首页" v-on:click="goTo('/')">
-    <h2>您已成功归还以下书籍：</h2>
-    
+    <h2 class="username">姓名：李明</h2>
+    <h2 class="usernumber">卡号：2016210430020</h2>
+    <h2 class="tip">您已成功归还以下书籍：</h2>
     <table border="1px solid black">
       <tbody>
         <tr>
@@ -58,17 +59,18 @@
         </tr>
       </tbody>
     </table>
+    <input type="button" value="返回首页" v-on:click="goTo('/')">
   </div>
   <div v-else="this.presentModule == 'fine'">
-    <input type="button" value="首页" v-on:click="goTo('/')">
-    <h2>您已成功偿还<font id="total_fined">9.00元</font>罚款。</h2>
+    <h2 class="username">姓名：李明</h2>
+    <h2 class="usernumber">卡号：2016210430020</h2>
+    <h2 class="tip">您已成功偿还<a>9.00元</a>罚款</h2>
     <table border="1px solid black">
       <tbody>
         <tr>
           <th abbr="超期事物编号">超期事物编号</th>
           <th abbr="题名">题名</th>
           <th abbr="备注">备注</th>
-          
         </tr>
         <tr>
           <td class="Fined_showId">101589591</td>
@@ -87,6 +89,7 @@
         </tr>
       </tbody>
     </table>
+    <input type="button" value="返回首页" v-on:click="goTo('/')">
   </div>
 </div>
 </template>
@@ -111,66 +114,73 @@ export default {
 </script>
 
 <style>
-     
-       #Borrow_Message
-       {
-          margin:100px;
-       }
-       #Borrow_Message h2
-       {
-          text-align:left; 
-          
+#Borrow_Message {
+  text-align: left;
+  position:relative;
+  left:12%;
+  width:70%;
+  margin:100px;
+}
+.username,.usernumber {
+  display : inline;
+  margin-right:40px;
+  font-size:30px;
+  margin-left:1%;
+}
+#Borrow_Message input {
+  float:right;
+  position:relative;
+  right:13%;
+  width: 100px;        
+  line-height: 30px;
+  margin-top:20px;
+  margin-right:20px;
+  border:2px solid  #0EA8A3;
+  cursor: pointer;
+  color: #0EA8A3;
+  background:white;
+} 
+#Borrow_Message input:hover {
+  background-color:#0EA8A3;
+  color:white;
+}
 
-       }
-       #Borrow_Message input
-       {
-         
-         width: 100px;        
-         color: #fff;       
-         margin: 10px auto;
-         border-radius: 5px;
-         line-height: 30px;
-         cursor: pointer;
-         background: #196fb8;  
-         border:1px solid #196fb8;
-       } 
-       #Borrow_Message table
-       {
-          margin-top:30px;
-          margin-left:10px;
-          width:800px;
-       }
-       #Borrow_Message tbody
-       {
-          border:1px solid black;
-       }
-        #Borrow_Message th
-       {
-          
-          padding:8px;
-         
-       }
-       #Borrow_Message tr
-       {
-         text-align:left;
-          padding:8px;
-          
-       }
-       #Borrow_Message td
-       {
-         
-          padding:8px;
-          padding-bottom:5px;
-          
-       }
-       .Borrow_showId 
-       {
-         
-         width:20%;
-       }
-      .Borrow_bookName
-      {
-        width:20%;
-      }
+#Borrow_Message table {
+  margin-left:10px;
+  width:800px;
+  font-size: 15px;
+}
+#Borrow_Message tbody {
+  border:1px solid lightgrey;
+}
+#Borrow_Message th {
+  padding:15px;
+  background-color: rgba(14,168,163,0.6);
+}
+#Borrow_Message tr {
+  text-align:left;
+  padding:15px;
+}
+#Borrow_Message td {
+  padding:15px;
+}
+/*定义了很多的class，只需要开头的class属性定义好就好*/
+#Borrow_Message .Borrow_showId ,
+#Borrow_Message .Return_showId,
+#Borrow_Message .Fined_showId {
+  width:18%;
+}
+#Borrow_Message .Borrow_bookName,
+#Borrow_Message .Return_bookName,
+#Borrow_Message .Fined_bookName {
+  width:25%;
+}
+#Borrow_Message .tip
+{
+   float:left;
+   font-size:25px;
+   padding-right:50%;
+   margin-left:1%;
+}
 
     </style>
