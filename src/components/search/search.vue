@@ -74,7 +74,7 @@
 							<li class="book_title" v-on:click="goTo('/search_detail')">《<font>人性</font>论》</li>
 							<li>作  者 : 张宽政著</li>
 							<li>出版日期 : 2013.01 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;页  数 : 215</li>
-							<li>简  介 : 本书讲述科学认识人性当以人与动物的区别为基点，作为人的属性可分善恶，劳动是人的第一特征，“一切社会关系的总和”是<font>人性</font>善恶的种子。人性未来走向仍然是善恶并存以善为主，不过评价善恶的标...</li>
+							<li>简  介 : 本书讲述科学认识人性当以人与动物的区别为基点，作为人的属性可分善恶，劳动是人的第一特征，“一切社会关系的总和”是<font>人性</font>善恶的种子。...</li>
 							<li>ISBN : 978-7-5120-0640-9</li>
 							<li>分  类 : 哲学、宗教->伦理学(道德哲学)->伦理学理论与方法论->伦理学流派及其研究</li>
 						</ul>				
@@ -146,7 +146,7 @@
 	.search .left {
 		position: absolute;
 		border: 1px solid #0EA8A3;
-		height: 115%;
+		height: 970px;
 		width: 300px;
 		top: 70px;
 		left: 80px;
@@ -165,7 +165,7 @@
 		width: 100%;
 		text-align: left;
 		padding: 15px;
-		font-size: 18px;
+		font-size: 16px;
 	}
 	.search .left .classify div {
 		font-weight: bolder;
@@ -203,13 +203,13 @@
 	.search .right .result .book {
 		padding-top: 20px;
 		list-style: none;
-		width: 90%;
-		height: 340px;
+		width: 100%;
+		height: 350px;
 		border-bottom:1px solid lightgray;
 	}
 	.search .right .result .book input {
 		position: relative;
-		top: -75%;
+		top: -240px;
 		left: 5px;
 		width: 18px;
 		height: 18px;
@@ -224,13 +224,14 @@
 		cursor: pointer;
 	}
 	.search .result .book ul {
+
 		display: inline-block;
 		list-style: none;
-		font-size: 18px;
+		font-size: 16px;
 		line-height: 40px;
 		margin-left: 200px;
 		height: 100%;
-		width: 80%;
+		width: 780px;
 	}
 	.search .book_title {
 		font-size: 20px;
@@ -241,7 +242,6 @@
 	}
 	.search .page {
 		width: 100%;
-		height: 20%;
 		padding-top: 30px;
 		text-align: center;
 	}

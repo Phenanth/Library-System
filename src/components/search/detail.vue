@@ -120,7 +120,7 @@
 		margin-top: 10px;
 		flex: left;
 		position: absolute;
-		left: 0px;
+		left: 20px;
 		width: 260px;
 	}
 	.search-detail .book ul {
@@ -129,9 +129,9 @@
 		list-style: none;
 		font-size: 18px;
 		line-height: 40px;
-		margin-left: 80px;
+		margin-left:260px;
 		height: 100%;
-		width: 60%;
+		width: 70%;
 	}
 	.search-detail .book .book_title {
 		font-size: 20px;
@@ -161,8 +161,8 @@
 	}
 	.search-detail #item {
 		margin-top: 15px;
-		width: 90%;
-		height: 20%;
+		width: 88%;
+		height: 100px;
 		line-height: 40px;
 		border:1px solid #5F9EA0;
 	}
@@ -171,7 +171,7 @@
 		width: 100%;
 		height: 70%;
 		position: absolute;
-		top: 112%;
+		top: 920px;
 		left: 0px;
 		padding-left: 80px;
 	}
@@ -181,7 +181,7 @@
 	}
 	.recommend_component {
 		border-top: 1px solid lightgray;
-		width: 90%;
+		width: 1500px;
 	}
 	.recommend_component ul {
 		padding-top: 20px;
@@ -193,8 +193,8 @@
 		width: 80%;
 	}
 	.search-detail .foot-info > span {
-	font-size: 12px;
-	color: gray;
+		font-size: 12px;
+		color: gray;
 	}
 	.search-detail .foot {
 		position: absolute;

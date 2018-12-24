@@ -20,6 +20,8 @@ CREATE TABLE `Identification` (
   `Max_Borrow_Time` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=gbk;
 
+ALTER TABLE user ADD user_secret char(20) DEFAULT NULL;
+
 /* 创建用户 */
 CREATE USER `libraryAdmin`@`localhost` IDENTIFIED BY `000000`;
 GRANT ALL ON myLibrary.* TO `libraryAdmin`@`localhost` WITH GRANT OPTION;
