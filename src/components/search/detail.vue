@@ -198,7 +198,7 @@
 	}
 	.search-detail .foot {
 		position: absolute;
-		top: 175%;
+		top: 1450px;
 		bottom: 0px;
 		height: 150px;
 		width: 100%;

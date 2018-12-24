@@ -286,7 +286,7 @@
 	}
 	.search .foot {
 		position: absolute;
-		top: 208%;
+		top: 1680px;
 		bottom: 0px;
 		height: 150px;
 		width: 100%;
