@@ -9,35 +9,47 @@
 
 		<div class="ctn-home">
 			<div class="category">
-				<div class="category-head">学术信息数据库</div>
-				材料类型
-				<div class="category-list">
-					<div class="category-list-box"></div>
-					<div class="category-list-box"></div>
-					<div class="category-list-box"></div>
-					<div class="category-list-box"></div>
-					<div class="category-list-box"></div>
+				<div class="category-head">
+					<img height="30px" width="35px" src="⁨../../static/svg/right.svg">
+					<span>学术信息数据库</span>
 				</div>
-				领域
+				<div>
+					<img height="30px" width="35px" src="⁨../../static/svg/right.svg">
+					材料类型
+				</div>
+				<div class="category-list">
+					<div class="category-list-box"><h5>书·杂志(250)</h5></div>
+					<div class="category-list-box"><h5>论文·摘录(720)</h5></div>
+					<div class="category-list-box"><h5>新闻(120)</h5></div>
+					<div class="category-list-box"><h5>人物·企业(80)</h5></div>
+					<div class="category-list-box"><h5>词典·事典·统计(90)</h5></div>
+				</div>
+				<div>
+					<img height="30px" width="35px" src="⁨../../static/svg/right.svg">
+					领域
+				</div>
 				<div class="category-field">
-					<div class="category-field-box"></div>
-					<div class="category-field-box"></div>
-					<div class="category-field-box"></div>
-					<div class="category-field-box"></div>
-					<div class="category-field-box"></div>
-					<div class="category-field-box"></div>
-					<div class="category-field-box"></div>
-					<div class="category-field-box"></div>
-					<div class="category-field-box"></div>
+					<div class="category-field-box"><h5>综合(170)</h5></div>
+					<div class="category-field-box"><h5>教育资料(110)</h5></div>
+					<div class="category-field-box"><h5>医疗保健(200)</h5></div>
+					<div class="category-field-box"><h5>经济商业(120)</h5></div>
+					<div class="category-field-box"><h5>文学(130)</h5></div>
+					<div class="category-field-box"><h5>政治法律(100)</h5></div>
+					<div class="category-field-box"><h5>历史(120)</h5></div>
+					<div class="category-field-box"><h5>就职信息(130)</h5></div>
+					<div class="category-field-box"><h5>其他(40)</h5></div>
 				</div>
 			</div>
 			<div class="info">
-				<div class="info-head">通知</div>
+				<div class="info-head">
+					<img height="30px" width="35px" src="⁨../../static/svg/left.svg">
+					通知
+				</div>
 				<div class="info-list">
-					<div class="info-list-box"></div>
-					<div class="info-list-box"></div>
-					<div class="info-list-box"></div>
-					<div class="info-list-box"></div>
+					<div class="info-list-box"><h5>关于2019年元旦图书馆开放安排的通知</h5></div>
+					<div class="info-list-box"><h5>退笔成山未足珍，读书万卷始通神——CASHL管理学资源优惠活动开始了</h5></div>
+					<div class="info-list-box"><h5>12 / 29 两条校图书馆临时休馆的通知</h5></div>
+					<div class="info-list-box"><h5>12月图书馆规划展示相关的通知</h5></div>
 				</div>
 			</div>
 		</div>
@@ -167,6 +179,7 @@ export default {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
+	text-align: center;
 }
 
 .info-list {
@@ -179,19 +192,40 @@ export default {
 	height: 100px;
 	margin: 3px;
 	display: flex;
+	justify-content: center;
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
 .category-list-box {
 
-	background-color: black;
+	border-color: lightblue;
+	border-style: solid;
+	border-width: 1px;
+	background-color: #F0FFFF;
+	text-align: center;
 }
 
 .category-field-box {
-	background-color: pink;
+	border-color: lightblue;
+	border-style: solid;
+	border-width: 1px;
+	background-color: #F0FFFF;
+	text-align: center;
 }
 
 .info-list-box {
-	background-color: #0EA8A3;
+	background-color: white;
+	width: 300px;
+	text-align: left;
+	border-bottom: 1px solid grey;
+}
+
+.category-field-box, .category-list-box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 10px;
 }
 
 /* Footer */
@@ -228,6 +262,16 @@ export default {
 .foot-search, .foot-client {
 	flex-grow: 1;
 }
-
+.category-list-box:hover{
+	border-color: #FF6347;
+	background-color: #FFF5EE;
+}
+.category-field-box:hover{
+	border-color: #FF6347;
+	background-color: #FFF5EE;
+}
+h5:hover{
+	color: #FF6347;
+}
 
 </style>
