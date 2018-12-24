@@ -165,7 +165,7 @@
 		width: 100%;
 		text-align: left;
 		padding: 15px;
-		font-size: 18px;
+		font-size: 16px;
 	}
 	.search .left .classify div {
 		font-weight: bolder;
@@ -227,11 +227,11 @@
 
 		display: inline-block;
 		list-style: none;
-		font-size: 18px;
+		font-size: 16px;
 		line-height: 40px;
 		margin-left: 200px;
 		height: 100%;
-		width: 900px;
+		width: 780px;
 	}
 	.search .book_title {
 		font-size: 20px;
