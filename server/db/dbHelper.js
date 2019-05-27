@@ -6,11 +6,21 @@ const db = require('./connect.js');
 const createToken = require('../middleware/createToken.js');
 const checkToken = require('../middleware/checkToken.js');
 
+var crypto = require('crypto');
+
+var speakeasy = require('speakeasy')
+var QRCode = require('qrcode')
+
+var salt = "abcdefghijklmnopqrstuvwxyz";
+var txt = "123456";
+
 const Login = (req, res) => {
+
+	var md5 = crypto.createHash('md5');
 
 	let validTime = '10s';
 	let queryString = {
-		sql: 'SELECT User_Password AS solution FROM User_Information WHERE User_ID=?',
+		sql: 'SELECT user_password AS solution FROM user WHERE user_id=?',
 		values: [req.body.username],
 		timeout: 40000
 	};
@@ -20,6 +30,7 @@ const Login = (req, res) => {
 	}
 	
 	// console.log(req.body);
+	// md5.update(req.body.password);
 
 	db.query(queryString, function(error, results, fields) {
 
@@ -39,7 +50,8 @@ const Login = (req, res) => {
 				});
 			} else {
 				// 如果有匹配的用户
-				if (req.body.password == results[0].solution) {
+				md5.update(req.body.password + salt);
+				if (md5.digest('hex') == results[0].solution) {
 					// 密码正确
 					console.log('Operation: Login, State: 200');
 					res.json({
@@ -74,7 +86,7 @@ const GetUserData = (req, res) => {
 
 	// console.log(req.body)
 	let queryString = {
-		sql: 'SELECT * FROM User_Information CROSS JOIN Identification WHERE User_Information.User_identity=Identification.User_identity AND User_ID=?',
+		sql: 'SELECT * FROM user CROSS JOIN Identification WHERE user.user_identity=Identification.User_identity AND user_id=?',
 		values: [req.body.username],
 		timeout: 40000
 	};
@@ -121,11 +133,14 @@ const ChangePassword = (req, res) => {
 
 	// console.log(req.body)
 
+	var md5 = crypto.createHash('md5');
+
 	let queryString_request = {
-		sql: 'SELECT User_Password AS solution FROM User_Information WHERE User_ID=?',
+		sql: 'SELECT user_password AS solution FROM user WHERE user_id=?',
 		values: [req.body.username],
 		timeout: 40000
 	};
+
 
 	db.query(queryString_request, function(error, results, fields) {
 
@@ -143,12 +158,15 @@ const ChangePassword = (req, res) => {
 					message: 'User not exists.'
 				});
 			} else {
+				md5.update(req.body.oldPassword + salt);
 				// console.log(results[0])
-				if (req.body.oldPassword == results[0].solution) {
+				if (md5.digest('hex') == results[0].solution) {
 					// 旧密码正确
+					md5 = crypto.createHash('md5')
+					md5.update(req.body.newPassword + salt);
 					let queryString_update = {
-						sql: 'UPDATE User_Information SET User_Password=?',
-						values: [req.body.newPassword],
+						sql: 'UPDATE user SET user_password=? WHERE user_id=?',
+						values: [md5.digest('hex'), req.body.username],
 						timeout: 40000
 					};
 
@@ -192,6 +210,13 @@ const ChangePassword = (req, res) => {
 			});
 		}
 	})
+}
+
+const SendVerify = (req, res) => {
+	var secret = speakeasy.generateSecret({length: 20});
+	let queryString = {
+
+	}
 }
 
 module.exports = (router) => {
