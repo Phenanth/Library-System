@@ -10,6 +10,9 @@
 		<li role="presentation" v-bind:class="{ activeTab: this.presentTab == 'safety' }" v-on:click="alterTab('safety')"">
 		 	<a>Safety</a>
 		</li>
+		<li role="presentation" v-bind:class="{ activeTab: this.presentTab == 'verify' }" v-on:click="alterTab('verify')"">
+		 	<a>Verify</a>
+		</li>
 	</ul>
 
 	<div v-if=" presentTab == 'profile' " class="ctn-userinfo">
@@ -46,9 +49,9 @@
 		</div>
 		<button type="botton" class="btn btn-login" v-on:click="logout">登出</button>
 	</form>
-	
 	</div>
-	<div v-else=" presentTab == 'safety' " class="stu-content">
+
+	<div v-else-if=" presentTab == 'safety' " class="stu-content">
 		<form class="form-horizontal">
 				<div class="form-group">
 					<label class="col-md-5 control-label" name="oldPassword">Old Password:</label>
@@ -71,6 +74,11 @@
 				<button class="btn btn-login btn-doChange" v-on:click="submitChange()">提交</button>
 			</form>
 	</div>
+
+	<div v-else-if=" presentTab == 'verify' " class="stu-content">
+		<button v-if="needAuth" class="btn btn-login btn-doChange" v-on:click="goTo('/verify-first')">进行认证</button>
+		<button v-else class="btn btn-login btn-doChange" v-on:click="doRemove()">关闭认证</button>
+	</div>
 </div>
 </template>
 
@@ -87,13 +95,19 @@ export default {
 				user_id: '',
 				user_identity: '',
 				max_borrow_num: '',
-				max_borrow_time: ''
+				max_borrow_time: '',
+				user_secret: ''
 			},
 			alter: {
 				oldPassword: '',
 				newPassword: '',
 				checkPassword: ''
 			}
+		}
+	},
+	computed: {
+		needAuth: function () {
+			return !this.userdata.user_secret
 		}
 	},
 	methods: {
@@ -128,7 +142,30 @@ export default {
 				alert('Check password is not consistent.')
 			}
 			
-		}
+		},
+		goTo: function ( route ) {
+			this.$router.push(route)
+		},
+	    doRemove: function () {
+	      let opt = {
+	        username: JSON.parse(store.getters.showTokenState).username
+	      }
+	      api.removeVerify(opt).then(({
+	        data
+	      }) => {
+	        if (data.info == 200) {
+	          let user = {
+	            username: JSON.parse(store.getters.showTokenState).username,
+	            token: JSON.parse(store.getters.showTokenState).token,
+	            verify: false
+	          }
+	          store.dispatch('updateToken', JSON.stringify(user))
+	          this.$router.go(0)
+	        } else {
+	          alert(data.message)
+	        }
+	      })
+	    }
 	},
 	mounted: function () {
 
@@ -146,6 +183,7 @@ export default {
 				this.userdata.user_identity = data.user_identity
 				this.userdata.max_borrow_num = data.max_borrow_num
 				this.userdata.max_borrow_time = data.max_borrow_time
+				this.userdata.user_secret = data.user_secret
 			} else {
 				alert(data.message)
 				logout()

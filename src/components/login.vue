@@ -59,10 +59,19 @@ export default {
 						// Authentificated role will be transfered from the server, this is just the test version.
 						let user = {
 							token: data.token,
-							username: this.username
+							username: this.username,
+							verify: data.user_secret
 						}
-						store.dispatch('storeToken', JSON.stringify(user))
-						this.$router.push('/userinfo')
+						store.dispatch('storeToken', JSON.stringify(user)) 
+						if (data.user_secret) {
+				          let auth = {
+				            username: JSON.parse(localStorage.getItem('token')).username
+				          }
+				          store.dispatch('setAuth', JSON.stringify(auth))
+				        } else {
+				        	store.dispatch('removeAuth')
+				        }
+						this.$router.push(data.path)
 						this.$router.go(0)
 					} else {
 						alert(data.message)

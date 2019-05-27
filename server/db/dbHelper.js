@@ -20,7 +20,7 @@ const Login = (req, res) => {
 
 	let validTime = '10s';
 	let queryString = {
-		sql: 'SELECT user_password AS solution FROM user WHERE user_id=?',
+		sql: 'SELECT user_password, user_secret FROM user WHERE user_id=?',
 		values: [req.body.username],
 		timeout: 40000
 	};
@@ -51,13 +51,14 @@ const Login = (req, res) => {
 			} else {
 				// 如果有匹配的用户
 				md5.update(req.body.password + salt);
-				if (md5.digest('hex') == results[0].solution) {
+				if (md5.digest('hex') == results[0].user_password) {
 					// 密码正确
 					console.log('Operation: Login, State: 200');
 					res.json({
 						info: 200,
 						success: true,
 						path: '/userinfo',
+						user_secret: new Boolean(results[0].user_secret),
 						token: createToken(req.body.username, validTime)
 					});	
 				} else {
@@ -115,6 +116,7 @@ const GetUserData = (req, res) => {
 					user_identity: results[0].Identify_Name,
 					max_borrow_num: results[0].Max_Borrow_Num,
 					max_borrow_time: results[0].Max_Borrow_Time,
+					user_secret: results[0].user_secret
 				});
 			}
 		} else {
@@ -213,10 +215,156 @@ const ChangePassword = (req, res) => {
 }
 
 const SendVerify = (req, res) => {
-	var secret = speakeasy.generateSecret({length: 20});
-	let queryString = {
 
+	var secret = speakeasy.generateSecret({length: 20});
+
+	let queryString = {
+		sql: 'UPDATE user SET user_secret_temp=? WHERE user_id=?',
+		values: [
+			[secret.base32],
+			[req.body.username]
+		],
+		timeout: 40000
+	};
+
+	db.query(queryString, function (error, results, fields) {
+
+		if (error) {
+			console.log(error)
+		}
+
+		QRCode.toDataURL(secret.otpauth_url, function (err, image_data) {
+		
+			if (err) {
+				console.log(err)
+			}
+			
+			res.json({
+				image: image_data
+			});
+
+		});
+
+	})
+}
+
+const Verify = (req, res) => {
+
+	var verifyCode = req.body.verifyCode
+
+	let queryString = {
+		sql: 'SELECT user_secret FROM user WHERE user_id=?',
+		values: [req.body.username],
+		timeout: 40000
 	}
+
+	if (req.body.first) {
+		queryString.sql = 'SELECT user_secret_temp FROM user WHERE user_id=?'
+	}
+	
+	db.query(queryString, function (error, results, fields) {
+
+		if (error) {
+			console.log(error)
+		}
+
+		if (results) {
+			if (results[0]) {
+				var secret = ''
+
+				if (req.body.first) {
+					secret = results[0].user_secret_temp
+				} else {
+					secret = results[0].user_secret
+				}
+
+				var token = speakeasy.totp({
+					secret: secret,
+					encoding: 'base32'
+				});
+
+				// console.log(secret)
+
+				if (verifyCode == token) {
+					if (req.body.first) {
+						let queryString2 = {
+							sql: 'UPDATE user SET user_secret=? WHERE user_id=?',
+							values: [[secret], [req.body.username]],
+							timeout: 40000
+						};
+						db.query(queryString2, function (error, results, fields) {
+							if (error) {
+								console.log(error)
+							}
+						});
+						queryString2 = {
+							sql: 'UPDATE user SET user_secret_temp=null WHERE user_id=?',
+							values: [req.body.username],
+							timeout: 40000
+						};
+						db.query(queryString2, function (error, results, fields) {
+							if (error) {
+								console.log(error)
+							}
+						});
+						console.log('Operation: First Verify, State: 200');
+					} else {
+						console.log('Operation: Verify, State: 200');
+					}
+					res.json({
+						info: 200,
+						success: true
+					});
+				} else {
+					console.log('Operation: Verify, State: 304, Message: Wrong Verify Code.');
+					res.json({
+						info: 304,
+						success: false,
+						message: 'Wrong Verify Code.'
+					});
+				}
+			}
+		} else {
+			console.log('Operation: Verify, State: 504, Message: Unknown DB Fault.');
+			res.json({
+				info: 504,
+				success: false,
+				message: 'Unknown DB Fault.'
+			});
+		}
+
+	});
+
+}
+
+const RemoveVerify = (req, res) => {
+	let queryString = {
+		sql: 'UPDATE user SET user_secret=null WHERE user_id=?',
+		values: [req.body.username],
+		timeout: 40000
+	};
+
+	db.query(queryString, function(error, results, fields) {
+
+		if (error) {
+			console.log(error)
+		}
+
+		if (results) {
+			console.log('Operation: Remove Verify, State: 200');
+			res.json({
+				info: 200,
+				success: true
+			});
+		} else {
+			console.log('Operation: Remove Verify, State: 504, Message: Unknown DB Fault.');
+			res.json({
+				info: 504,
+				success: false,
+				message: 'Unknown DB Fault'
+			});
+		}
+	});
 }
 
 module.exports = (router) => {
@@ -226,5 +374,11 @@ module.exports = (router) => {
 	router.post('/getUserData', GetUserData);
 
 	router.post('/changePassword', ChangePassword);
+
+	router.post('/sendVerify', SendVerify);
+
+	router.post('/verify', Verify);
+
+	router.post('/removeverify', RemoveVerify);
 
 }

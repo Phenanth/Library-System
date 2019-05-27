@@ -37,6 +37,18 @@ export default {
 
 	changePassword ( data ) {
 		return instance.post('/api/changePassword', data)
+	},
+
+	sendVerify ( data ) {
+		return instance.post('/api/sendVerify', data)
+	},
+
+	verify ( data ) {
+		return instance.post('/api/verify', data)
+	},
+
+	removeVerify ( data ) {
+		return instance.post('/api/removeverify', data)
 	}
 
 }

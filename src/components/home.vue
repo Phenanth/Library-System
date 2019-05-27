@@ -4,7 +4,7 @@
 
 	<div class="home">
 		<div class="head-home">
-			<span>HZNU Library's Information & Research Databases</span><span v-if="isWid"> | </span><hr v-else/><span v-if="isWid">用于学术信息的收集和论文·报告的杭州师范大学大学图书馆网站</span><span v-else>收集和论文·报告的杭州师范大学大学图书馆网站</span>
+			<span>HZNU Library's Information & Research Databases</span><span> | </span><span>用于学术信息的收集和论文·报告的杭州师范大学大学图书馆网站</span><span>收集和论文·报告的杭州师范大学大学图书馆网站</span>
 		</div>
 
 		<div class="ctn-home row">

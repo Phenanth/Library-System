@@ -16,6 +16,10 @@ import Success from '@/components/book/success'
 import Search from '@/components/search/search'
 import Search_detail from '@/components/search/detail'
 
+import VerifyLogin from '@/components/authenticate/verify_login'
+import VerifyFirst from '@/components/authenticate/verify_first'
+
+
 Vue.use(Router)
 
 export default new Router({
@@ -41,6 +45,24 @@ export default new Router({
               next('/userinfo')
             } else {
               next()
+            }
+          }
+        },
+        {
+          path: '/verify-login',
+          name: 'Verify-Login',
+          component: VerifyLogin,
+          beforeEnter: (to, from, next) => {
+            let token = JSON.parse(store.getters.showTokenState)
+            let needAuth = JSON.parse(store.getters.showAuthState)
+            if (needAuth) {
+              next()
+            } else {
+              if (token) {
+                next('/userinfo')
+              } else {
+                next('/login')
+              }
             }
           }
         },
@@ -75,15 +97,33 @@ export default new Router({
           component: Search_detail
         },
         {
+          path: '/verify-first',
+          name: 'Verify-First',
+          component: VerifyFirst,
+          beforeEnter: (to, from, next) => {
+            let verify = JSON.parse(store.getters.showTokenState).verify
+            if (verify) {
+              next('/userinfo')
+            } else {
+              next()
+            }
+          }
+        },
+        {
           path: '/userinfo',
           name: 'Userinfo',
           component: Userinfo,
           beforeEnter: (to, from, next) => {
             let token = JSON.parse(store.getters.showTokenState)
-            if (token) {
+            let needAuth = JSON.parse(store.getters.showAuthState)
+            if (token && !needAuth) {
               next()
             } else {
-              next('/login')
+              if (needAuth) {
+                next('/verify-login')
+              } else {
+                next('/login')
+              }
             }
           }
         }
