@@ -3,8 +3,11 @@
 const Express = require('express');
 const router = Express.Router();
 const db = require('./connect.js');
+const memcached = require('../middleware/memcached.js')
 const createToken = require('../middleware/createToken.js');
 const checkToken = require('../middleware/checkToken.js');
+const common = require('../middleware/common.js');
+
 
 var crypto = require('crypto');
 
@@ -54,6 +57,14 @@ const Login = (req, res) => {
 				if (md5.digest('hex') == results[0].user_password) {
 					// 密码正确
 					console.log('Operation: Login, State: 200');
+
+					// 储存用户信息到Memcached
+					let jsonData = {
+						user_id: req.body.username,
+						login_time: common.getPresentTime()
+					}
+					memcached.set(req.body.username, JSON.stringify(jsonData));
+
 					res.json({
 						info: 200,
 						success: true,
@@ -111,8 +122,9 @@ const GetUserData = (req, res) => {
 				res.json({
 					info: 200,
 					success: true,
-					user_name: results[0].User_Name,
-					user_id: results[0].User_ID,
+					// user_name: results[0].User_Name,
+					user_name: '张三', // 数据库表改动了的原因，user表没有名字了...
+					user_id: results[0].user_id,
 					user_identity: results[0].Identify_Name,
 					max_borrow_num: results[0].Max_Borrow_Num,
 					max_borrow_time: results[0].Max_Borrow_Time,
@@ -367,6 +379,37 @@ const RemoveVerify = (req, res) => {
 	});
 }
 
+// 管理员查看所有成员的一个月内最后登录日期
+const GetActiveTime = (req, res) => {
+	let queryString = {
+		sql: 'SELECT user_id AS solution FROM user',
+		timeout: 40000
+	}
+	db.query(queryString, function (error, results, fields) {
+		if (error) {
+			console.log(error)
+		} else {
+			let user_ids = new Array()
+			results.forEach(function (result) {
+				user_ids.push(result.solution)
+			});
+			memcached.getMulti(user_ids, function(errCache, rst) {
+				if (errCache) {
+					console.log(errCache)
+				} else {
+					// console.log(rst)
+					res.json({
+						info: 200,
+						success: true,
+						data: rst
+					})					
+				}
+
+			})
+		}
+	})
+}
+
 module.exports = (router) => {
 
 	router.post('/login', Login);
@@ -380,5 +423,7 @@ module.exports = (router) => {
 	router.post('/verify', Verify);
 
 	router.post('/removeverify', RemoveVerify);
+
+	router.post('/getActiveTime', GetActiveTime);
 
 }

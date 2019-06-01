@@ -26,7 +26,7 @@
 			<div class="hd-toggle-bar-option" v-on:click="goTo('/module/fine/tips')">罚款</div>
 		</div>
 
-		<button class="btn btn-default btn-goLogin col-md-1" v-on:click="goTo('/login')">登录</button>
+		<button class="btn btn-default btn-goLogin col-md-1" v-on:click="goTo('/login')">{{loginBtnText}}</button>
 
 	</div>
 
@@ -37,12 +37,26 @@
 </template>
 
 <script>
+import store from '../store'
 export default {
 	name: 'Home',
 	methods: {
 		goTo: function (path) {
 			this.$router.push(path)
 			this.$router.go(0)
+		}
+	},
+	data: function () {
+		return {
+			loginBtnText: ''
+		}
+	},
+	mounted: function () {
+		let isLogin = store.getters.showTokenState
+		if (isLogin) {
+			this.loginBtnText = '个人'
+		} else {
+			this.loginBtnText = '登录'
 		}
 	}
 }

@@ -90,14 +90,15 @@ export default {
 <style>
 
 .home {
-	padding-top: 45px;
+	padding-top: 120px;
 	overflow-x: hidden;
 	overflow-y: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 .ctn-home {
 	height: 100%;
-	margin-top: 30px;
 	margin-left: 10%;
 	margin-right: 10%;
 }

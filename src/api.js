@@ -49,6 +49,10 @@ export default {
 
 	removeVerify ( data ) {
 		return instance.post('/api/removeverify', data)
+	},
+
+	getLastLoginTime( data ) {
+		return instance.post('/api/getActiveTime', data)
 	}
 
 }

@@ -4,6 +4,7 @@ const Express = require('express');
 const BodyParser = require('body-parser');
 const routes = require('./routes.js');
 const db = require('./db/connect.js');
+const memcached = require('./middleware/memcached.js')
 const app = Express();
 
 app.use(BodyParser.json());

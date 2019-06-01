@@ -10,6 +10,9 @@
 		<li role="presentation" v-bind:class="{ activeTab: this.presentTab == 'safety' }" v-on:click="alterTab('safety')"">
 		 	<a>Safety</a>
 		</li>
+		<li role="presentation" v-if="this.userdata.user_identity == '管理员'" v-bind:class="{ activeTab: this.presentTab == 'overview' }" v-on:click="getOverview()">
+			<a>Overview</a>
+		</li>
 		<li role="presentation" v-bind:class="{ activeTab: this.presentTab == 'verify' }" v-on:click="alterTab('verify')"">
 		 	<a>Verify</a>
 		</li>
@@ -79,6 +82,12 @@
 		<button v-if="needAuth" class="btn btn-login btn-doChange" v-on:click="goTo('/verify-first')">进行认证</button>
 		<button v-else class="btn btn-login btn-doChange" v-on:click="doRemove()">关闭认证</button>
 	</div>
+
+	<div v-else-if=" presentTab == 'overview' " class="stu-content">
+		<div v-for="user in activeTimes">
+			<li>{{user}}</li>
+		</div>
+	</div>
 </div>
 </template>
 
@@ -98,6 +107,7 @@ export default {
 				max_borrow_time: '',
 				user_secret: ''
 			},
+			activeTimes: undefined,
 			alter: {
 				oldPassword: '',
 				newPassword: '',
@@ -142,6 +152,18 @@ export default {
 				alert('Check password is not consistent.')
 			}
 			
+		},
+		getOverview: function () {
+			this.alterTab('overview')
+			if (!this.activeTimes) {
+				api.getLastLoginTime().then(({
+					data
+				}) => {
+					if (data.success) {
+						this.activeTimes = data.data
+					}
+				})
+			}
 		},
 		goTo: function ( route ) {
 			this.$router.push(route)
