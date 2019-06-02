@@ -56,13 +56,14 @@ const Login = (req, res) => {
 				md5.update(req.body.password + salt);
 				if (md5.digest('hex') == results[0].user_password) {
 					// 密码正确
-					console.log('Operation: Login, State: 200');
+					console.log('Operation: Login, State: 200.');
 
 					// 储存用户信息到Memcached
 					let jsonData = {
 						user_id: req.body.username,
 						login_time: common.getPresentTime()
 					}
+					console.log('Operation: Set Active Time, State: 200, Procedure:')
 					memcached.set(req.body.username, JSON.stringify(jsonData));
 
 					res.json({
@@ -380,6 +381,7 @@ const RemoveVerify = (req, res) => {
 }
 
 // 管理员查看所有成员的一个月内最后登录日期
+// 突然想到了可能需要对返回数组的id进行排序的情况，日后有需要的话可以优化
 const GetActiveTime = (req, res) => {
 	let queryString = {
 		sql: 'SELECT user_id AS solution FROM user',
@@ -393,15 +395,22 @@ const GetActiveTime = (req, res) => {
 			results.forEach(function (result) {
 				user_ids.push(result.solution)
 			});
+			console.log('Operation: Get Active Time, State: 200, Procedure:')
 			memcached.getMulti(user_ids, function(errCache, rst) {
 				if (errCache) {
 					console.log(errCache)
 				} else {
 					// console.log(rst)
+					// 处理查询数据的格式并返回结果数组
+					let rstArray = new Array()
+					for (var i in rst) {
+						rstArray.push(JSON.parse(rst[i]))
+					}
+					// console.log(rstArray)
 					res.json({
 						info: 200,
 						success: true,
-						data: rst
+						data: rstArray
 					})					
 				}
 

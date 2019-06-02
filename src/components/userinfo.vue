@@ -58,19 +58,19 @@
 		<form class="form-horizontal">
 				<div class="form-group">
 					<label class="col-md-5 control-label" name="oldPassword">Old Password:</label>
-					<div class="col-md-7">
+					<div class="col-md-5">
 						<input type="password" class="form-control" placeholder="Old Password" v-model="alter.oldPassword">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-5 control-label" name="newPassword">New Password:</label>
-					<div class="col-md-7">
+					<div class="col-md-5">
 						<input type="password" class="form-control" placeholder="New Password" v-model="alter.newPassword">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-5 control-label" name="checkPassword">Check Password:</label>
-					<div class="col-md-7">
+					<div class="col-md-5">
 						<input type="password" class="form-control" placeholder="Check the New Password" v-model="alter.checkPassword">
 					</div>
 				</div>
@@ -84,8 +84,24 @@
 	</div>
 
 	<div v-else-if=" presentTab == 'overview' " class="stu-content">
-		<div v-for="user in activeTimes">
-			<li>{{user}}</li>
+		<div class="library-userOverview">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr class="library-backColor-cyan">
+						<th>用户名</th>
+						<th>活跃日期</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="user in activeTimes">
+						<td>{{user.user_id}}</td>
+						<td>{{user.login_time}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="alert alert-info">
+			数据来自Memcached，每次重启后都会被清空。
 		</div>
 	</div>
 </div>
@@ -216,6 +232,10 @@ export default {
 </script>
 <style>
 
+th {
+	text-align: center;
+}
+
 .userinfo {
 	width: 100%;
 	height: 100%;
@@ -260,6 +280,11 @@ export default {
 	color: white;
 }
 
+.stu-content {
+	width: 40%;
+	height: 300px;
+}
+
 .ctn-userinfo {
 	width: 50%;
 }
@@ -269,4 +294,18 @@ export default {
 	background-color: #0EA8A3;
 	color: white;
 }
+
+.library-userOverview {
+	height: 100%;
+}
+
+.library-userOverview > li {
+	list-style: none;
+}
+
+.library-backColor-cyan {
+	background-color: #0EA8A3;
+	color: white;
+}
+
 </style>
