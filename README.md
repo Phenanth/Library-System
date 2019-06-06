@@ -57,6 +57,17 @@
 - 添加Memcached
     + 新功能：管理员能够查看所有用户的一个月内的最近登录时间
 
+### 0606 - CWF
+- 添加MQ功能
+    + Middleware - Sender（消息发送器，在dbHelper的各项服务中被调用）
+    + Middleware - Receiver（消息接收器，在服务器启动时被初始化，等待接收来自Sender的消息）
+
+Sender处在：`/server/middleware/RabbitMQ/sender.js`
+Receiver处在：`/server/middleware/RabbitMQ/receiver.js`
+如果需要查看发送器Sender的调用语法，请参考`dbHelper`或者`/server/testRoute.js`
+
+MQ的Receiver对收到消息的回调函数里还会加入日志系统，实现方法：通过将Receiver收到的消息保存到本地文件来实现日志系统。
+
 #### 解决问题
 
 MySQL：

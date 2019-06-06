@@ -3,7 +3,8 @@
 const Express = require('express');
 const router = Express.Router();
 const db = require('./connect.js');
-const memcached = require('../middleware/memcached.js')
+const memcached = require('../middleware/memcached.js');
+const mqSender = require('../middleware/RabbitMQ/sender.js');
 const createToken = require('../middleware/createToken.js');
 const checkToken = require('../middleware/checkToken.js');
 const common = require('../middleware/common.js');
@@ -31,9 +32,6 @@ const Login = (req, res) => {
 	if (req.body.willStore) {
 		validTime = '168h';
 	}
-	
-	// console.log(req.body);
-	// md5.update(req.body.password);
 
 	db.query(queryString, function(error, results, fields) {
 
@@ -45,7 +43,7 @@ const Login = (req, res) => {
 			// 防止code: 'ER_NOT_SUPPORTED_AUTH_MODE'类型错误
 			if (!results[0]) {
 				// 用户不存在
-				console.log('Operation: Login, State: 404, Message: User not existed.');
+				mqSender('Operation: Login, State: 404, Message: User not existed.')
 				res.json({
 					info: 404,
 					success: false,
@@ -56,16 +54,15 @@ const Login = (req, res) => {
 				md5.update(req.body.password + salt);
 				if (md5.digest('hex') == results[0].user_password) {
 					// 密码正确
-					console.log('Operation: Login, State: 200.');
-
+					mqSender('Operation: Login, State: 200.')
 					// 储存用户信息到Memcached
 					let jsonData = {
 						user_id: req.body.username,
 						login_time: common.getPresentTime()
 					}
-					console.log('Operation: Set Active Time, State: 200, Procedure:')
-					memcached.set(req.body.username, JSON.stringify(jsonData));
 
+					mqSender('Operation: Set Active Time, State: 200, Procedure is in the console.')
+					memcached.set(req.body.username, JSON.stringify(jsonData));
 					res.json({
 						info: 200,
 						success: true,
@@ -75,7 +72,7 @@ const Login = (req, res) => {
 					});	
 				} else {
 					// 密码错误
-					console.log('Operation: Login, State: 304, Message: Wrong password.');
+					mqSender('Operation: Login, State: 304, Message: Wrong password.')
 					res.json({
 						info: 304,
 						success: false,
@@ -84,7 +81,7 @@ const Login = (req, res) => {
 				}
 			}
 		} else {
-			console.log('Operation: Login, State: 504, Message: Unknown DB Fault.');
+			mqSender('Operation: Login, State: 504, Message: Unknown DB Fault.')
 			res.json({
 				info: 504,
 				success: false,
@@ -112,19 +109,19 @@ const GetUserData = (req, res) => {
 
 		if (results) {
 			if (!results[0]) {
-				console.log('Operation: Get User Data, State: 404, Message: User not existed.');
+				mqSender('Operation: Get User Data, State: 404, Message: User not existed.')
 				res.json({
 					info: 404,
 					success: false,
 					message: 'User not exists.'
 				});
 			} else {
-				console.log('Operation: Get User Data, State: 200');
+				mqSender('Operation: Get User Data, State: 200')
 				res.json({
 					info: 200,
 					success: true,
 					// user_name: results[0].User_Name,
-					user_name: '张三', // 数据库表改动了的原因，user表没有名字了...
+					user_name: '张三', // 数据库表改动了的原因，user表没有名字了...手动加一个
 					user_id: results[0].user_id,
 					user_identity: results[0].Identify_Name,
 					max_borrow_num: results[0].Max_Borrow_Num,
@@ -133,7 +130,7 @@ const GetUserData = (req, res) => {
 				});
 			}
 		} else {
-			console.log('Operation: Get User Data, State: 504, Message: Unknown DB Fault.');
+			mqSender('Operation: Get User Data, State: 504, Message: Unknown DB Fault.')
 			res.json({
 				info: 504,
 				success: false,
@@ -145,8 +142,6 @@ const GetUserData = (req, res) => {
 };
 
 const ChangePassword = (req, res) => {
-
-	// console.log(req.body)
 
 	var md5 = crypto.createHash('md5');
 
@@ -166,7 +161,7 @@ const ChangePassword = (req, res) => {
 		if (results) {
 			if (!results[0]) {
 				// 用户不存在
-				console.log('Operation: Change Password, State: 404, Message: User not exists.');
+				mqSender('Operation: Change Password, State: 404, Message: User not exists.')
 				res.json({
 					info: 404,
 					success: false,
@@ -190,14 +185,14 @@ const ChangePassword = (req, res) => {
 							console.log(error)
 						}
 						if (results) {
-							console.log('Operation: Change Password, State: 200');
+							mqSender('Operation: Change Password, State: 200')
 							res.json({
 								info: 200,
 								success: true
 							});
 						} else {
 							// 查询失败
-							console.log('Operation: Change Password, State: 504, Message: Unknown DB Fault.');
+							mqSender('Operation: Change Password, State: 504, Message: Unknown DB Fault.')
 							res.json({
 								info: 504,
 								success: false,
@@ -207,7 +202,7 @@ const ChangePassword = (req, res) => {
 					});
 				} else {
 					// 旧密码错误
-					console.log('Operation: Change Password, State: 304, Message: Wrong Password.');
+					mqSender('Operation: Change Password, State: 304, Message: Wrong Password.')
 					res.json({
 						info: 304,
 						success: false,
@@ -217,7 +212,7 @@ const ChangePassword = (req, res) => {
 			}
 		} else {
 			// 查询失败
-			console.log('Operation: Change Password, State: 504, Message: Unknown DB Fault.');
+			mqSender('Operation: Change Password, State: 504, Message: Unknown DB Fault.')
 			res.json({
 				info: 504,
 				success: false,
@@ -247,15 +242,12 @@ const SendVerify = (req, res) => {
 		}
 
 		QRCode.toDataURL(secret.otpauth_url, function (err, image_data) {
-		
 			if (err) {
 				console.log(err)
 			}
-			
 			res.json({
 				image: image_data
 			});
-
 		});
 
 	})
@@ -296,8 +288,6 @@ const Verify = (req, res) => {
 					encoding: 'base32'
 				});
 
-				// console.log(secret)
-
 				if (verifyCode == token) {
 					if (req.body.first) {
 						let queryString2 = {
@@ -320,16 +310,16 @@ const Verify = (req, res) => {
 								console.log(error)
 							}
 						});
-						console.log('Operation: First Verify, State: 200');
+						mqSender('Operation: First Verify, State: 200')
 					} else {
-						console.log('Operation: Verify, State: 200');
+						mqSender('Operation: Verify, State: 200')
 					}
 					res.json({
 						info: 200,
 						success: true
 					});
 				} else {
-					console.log('Operation: Verify, State: 304, Message: Wrong Verify Code.');
+					mqSender('Operation: Verify, State: 304, Message: Wrong Verify Code.')
 					res.json({
 						info: 304,
 						success: false,
@@ -338,7 +328,7 @@ const Verify = (req, res) => {
 				}
 			}
 		} else {
-			console.log('Operation: Verify, State: 504, Message: Unknown DB Fault.');
+			mqSender('Operation: Verify, State: 504, Message: Unknown DB Fault.')
 			res.json({
 				info: 504,
 				success: false,
@@ -364,13 +354,13 @@ const RemoveVerify = (req, res) => {
 		}
 
 		if (results) {
-			console.log('Operation: Remove Verify, State: 200');
+			mqSender('Operation: Remove Verify, State: 200')
 			res.json({
 				info: 200,
 				success: true
 			});
 		} else {
-			console.log('Operation: Remove Verify, State: 504, Message: Unknown DB Fault.');
+			mqSender('Operation: Remove Verify, State: 504, Message: Unknown DB Fault.')
 			res.json({
 				info: 504,
 				success: false,
@@ -383,40 +373,49 @@ const RemoveVerify = (req, res) => {
 // 管理员查看所有成员的一个月内最后登录日期
 // 突然想到了可能需要对返回数组的id进行排序的情况，日后有需要的话可以优化
 const GetActiveTime = (req, res) => {
+
 	let queryString = {
 		sql: 'SELECT user_id AS solution FROM user',
 		timeout: 40000
 	}
+
 	db.query(queryString, function (error, results, fields) {
 		if (error) {
-			console.log(error)
+			console.log(error);
+			mqSender('Operation: Get Active Time, State: 504, Message: Unknown DB Fault');
+			res.json({
+				info: 504,
+				success: false,
+				message: 'Unknown DB Fault.'
+			});
 		} else {
+
 			let user_ids = new Array()
 			results.forEach(function (result) {
-				user_ids.push(result.solution)
+				user_ids.push(result.solution);
 			});
-			console.log('Operation: Get Active Time, State: 200, Procedure:')
+
+			mqSender('Operation: Get Active Time, State: 200, Procedure is in the console.');
 			memcached.getMulti(user_ids, function(errCache, rst) {
 				if (errCache) {
-					console.log(errCache)
+					console.log(errCache);
 				} else {
-					// console.log(rst)
 					// 处理查询数据的格式并返回结果数组
 					let rstArray = new Array()
 					for (var i in rst) {
-						rstArray.push(JSON.parse(rst[i]))
+						rstArray.push(JSON.parse(rst[i]));
 					}
-					// console.log(rstArray)
+
 					res.json({
 						info: 200,
 						success: true,
 						data: rstArray
-					})					
+					});				
 				}
-
-			})
+			});
 		}
-	})
+	});
+
 }
 
 module.exports = (router) => {
