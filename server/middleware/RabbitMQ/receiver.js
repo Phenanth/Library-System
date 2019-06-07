@@ -22,6 +22,6 @@ async function receiveMessage() {
 }
 
 receiveMessage();
-console.log('MQ started.');
+logger.info('MQ started.');
 
 module.exports  = receiveMessage;
