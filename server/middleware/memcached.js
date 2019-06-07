@@ -1,5 +1,7 @@
 const Memcached = require('memcached');
 const memcached = new Memcached('localhost:11211', { debug: true });
+const log4js = require('log4js');
+const logger = require('./logger');
 
 // 最大过期时间
 const MAX_EXPIRE_TIME = 7 * 24 * 60 * 60;
@@ -22,12 +24,12 @@ user_id: 		用户id
 login_time: 	最近登录时间
 */
 
-console.log('Memcached connected.')
+logger.info('Memcached connected.')
 
 module.exports = {
 	
 	init: function ctor(server, opt) {
-		console.log('Memcached is initialized.');
+		logger.info('Memcached is initialized.');
 	},
 
 	set: function addToCache(key, val, expire, callback) {

@@ -6,6 +6,8 @@ const routes = require('./routes.js');
 const db = require('./db/connect.js');
 const memcached = require('./middleware/memcached.js');
 const mq = require('./middleware/RabbitMQ/receiver.js');
+const log4js = require('log4js');
+const logger = require('./middleware/logger');
 const app = Express();
 
 app.use(BodyParser.json());
@@ -21,7 +23,7 @@ app.use(function (req, res, next) {
 });
 
 app.listen(3000, function () {
-	console.log('Server running at port 3000...');
+	logger.info('Server running at port 3000...');
 });
 
 /*// Keep the db connection alive.

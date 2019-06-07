@@ -8,6 +8,8 @@ const mqSender = require('../middleware/RabbitMQ/sender.js');
 const createToken = require('../middleware/createToken.js');
 const checkToken = require('../middleware/checkToken.js');
 const common = require('../middleware/common.js');
+const log4js = require('log4js');
+const logger = require('../middleware/logger');
 
 
 var crypto = require('crypto');
@@ -36,7 +38,7 @@ const Login = (req, res) => {
 	db.query(queryString, function(error, results, fields) {
 
 		if (error) {
-			console.log(error);
+			logger.error.error(error);
 		}
 		
 		if (results) {
@@ -104,7 +106,7 @@ const GetUserData = (req, res) => {
 	db.query(queryString, function(error, results, fields) {
 
 		if (error) {
-			console.log(error)
+			logger.error.error(error)
 		}
 
 		if (results) {
@@ -155,7 +157,7 @@ const ChangePassword = (req, res) => {
 	db.query(queryString_request, function(error, results, fields) {
 
 		if (error) {
-			console.log(error)
+			logger.error.error(error)
 		}
 
 		if (results) {
@@ -182,7 +184,7 @@ const ChangePassword = (req, res) => {
 
 					db.query(queryString_update, function(error, results, fields) {
 						if (error) {
-							console.log(error)
+							logger.error.error(error)
 						}
 						if (results) {
 							mqSender('Operation: Change Password, State: 200')
@@ -238,12 +240,12 @@ const SendVerify = (req, res) => {
 	db.query(queryString, function (error, results, fields) {
 
 		if (error) {
-			console.log(error)
+			logger.error.error(error)
 		}
 
 		QRCode.toDataURL(secret.otpauth_url, function (err, image_data) {
 			if (err) {
-				console.log(err)
+				logger.error.error(err)
 			}
 			res.json({
 				image: image_data
@@ -270,7 +272,7 @@ const Verify = (req, res) => {
 	db.query(queryString, function (error, results, fields) {
 
 		if (error) {
-			console.log(error)
+			logger.error.error(error)
 		}
 
 		if (results) {
@@ -297,7 +299,7 @@ const Verify = (req, res) => {
 						};
 						db.query(queryString2, function (error, results, fields) {
 							if (error) {
-								console.log(error)
+								logger.error.error(error)
 							}
 						});
 						queryString2 = {
@@ -307,7 +309,7 @@ const Verify = (req, res) => {
 						};
 						db.query(queryString2, function (error, results, fields) {
 							if (error) {
-								console.log(error)
+								logger.error.error(error)
 							}
 						});
 						mqSender('Operation: First Verify, State: 200')
@@ -350,7 +352,7 @@ const RemoveVerify = (req, res) => {
 	db.query(queryString, function(error, results, fields) {
 
 		if (error) {
-			console.log(error)
+			logger.error.error(error)
 		}
 
 		if (results) {
@@ -381,7 +383,7 @@ const GetActiveTime = (req, res) => {
 
 	db.query(queryString, function (error, results, fields) {
 		if (error) {
-			console.log(error);
+			logger.error.error(error);
 			mqSender('Operation: Get Active Time, State: 504, Message: Unknown DB Fault');
 			res.json({
 				info: 504,
@@ -398,7 +400,7 @@ const GetActiveTime = (req, res) => {
 			mqSender('Operation: Get Active Time, State: 200, Procedure is in the console.');
 			memcached.getMulti(user_ids, function(errCache, rst) {
 				if (errCache) {
-					console.log(errCache);
+					logger.error.error(errCache);
 				} else {
 					// 处理查询数据的格式并返回结果数组
 					let rstArray = new Array()
