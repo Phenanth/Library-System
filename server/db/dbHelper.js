@@ -10,6 +10,7 @@ const checkToken = require('../middleware/checkToken.js');
 const common = require('../middleware/common.js');
 const log4js = require('log4js');
 const logger = require('../middleware/logger');
+const redis = require('../middleware/redis.js');
 
 
 var crypto = require('crypto');
@@ -65,6 +66,21 @@ const Login = (req, res) => {
 
 					mqSender('Operation: Set Active Time, State: 200, Procedure is in the console.')
 					memcached.set(req.body.username, JSON.stringify(jsonData));
+
+					let name = req.body.username;
+					//格式化redis存储的数据
+					let userToken = {
+						"username": name,
+						"token": createToken(name, validTime),
+						"auth": false
+					 }
+					let jsonString = JSON.stringify(userToken); // 从JSON对象到字符串
+					
+
+					 //将token存入redis
+					redis.set(name,jsonString);
+					console.log('Operation: store token in redis');
+
 					res.json({
 						info: 200,
 						success: true,

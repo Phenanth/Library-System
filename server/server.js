@@ -7,12 +7,16 @@ const db = require('./db/connect.js');
 const memcached = require('./middleware/memcached.js');
 const mq = require('./middleware/RabbitMQ/receiver.js');
 const log4js = require('log4js');
+
 const logger = require('./middleware/logger');
 const app = Express();
+
+
 
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: true }));
 
+ 
 app.use('/', routes);
 app.use('/api', routes);
 
