@@ -31,3 +31,5 @@ INSERT INTO `user` VALUES ('2015210405004', '6cc7af7f2fbb06fd1701ebcd0497a2c2', 
 
 # 管理员
 GRANT ALL ON sw_arch_library.* TO `swLibraryAdmin`@`localhost` IDENTIFIED BY '000000';
+
+GRANT ALL ON sw_arch_library.* TO `swLibraryAdminRe`@'10.0.75.2' IDENTIFIED BY '000000' WITH GRANT OPTION;

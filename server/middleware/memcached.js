@@ -1,5 +1,5 @@
 const Memcached = require('memcached');
-const memcached = new Memcached('localhost:11211', { debug: true });
+const memcached = new Memcached('10.0.75.1:11211', { debug: true });
 const log4js = require('log4js');
 const logger = require('./logger');
 
